@@ -1,0 +1,3 @@
+[submodule "dct"]
+	path = jpeg/3rdparty/dct
+	url = https://github.com/Mr6one/fast_dct
