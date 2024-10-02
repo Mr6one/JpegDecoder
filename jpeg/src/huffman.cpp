@@ -1,5 +1,7 @@
 #include "huffman.hpp"
 
+#include <stdexcept>
+
 namespace jpeg {
 
 HuffmanTree::HuffmanTree(const std::vector<byte>& lengths, const std::vector<byte>& codes): root_{new Node()}, search_node_(root_) {

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <array>
+#include <cstdint>
+#include <string>
 
 namespace jpeg {
 

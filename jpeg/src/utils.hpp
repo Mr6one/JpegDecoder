@@ -2,6 +2,10 @@
 
 #include "image.hpp"
 
+#include <cmath>
+#include <tuple>
+#include <array>
+
 namespace jpeg {
 
 namespace utils {
@@ -12,7 +16,7 @@ uint8_t clip8bit(const T& value) {
 }
 
 void YCbCrToRGB(Image& image) {
-    auto pixel_conversion = [](float Y, float Cb, float Cr) -> std::array<uint8_t, 3> {
+    auto pixel_conversion = [](float Y, float Cb, float Cr) -> std::tuple<uint8_t, uint8_t, uint8_t> {
         Cb -= 128;
         Cr -= 128;
         uint8_t R = clip8bit(std::round(Y + 1.402 * Cr));

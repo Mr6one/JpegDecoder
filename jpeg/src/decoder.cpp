@@ -4,6 +4,7 @@
 #include "sdct.hpp"
 
 #include <numeric>
+#include <tuple>
 
 namespace jpeg {
 

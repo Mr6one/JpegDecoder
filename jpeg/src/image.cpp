@@ -1,6 +1,7 @@
 #include "image.hpp"
 
 #include <fstream>
+#include <array>
 
 namespace jpeg {
 
