@@ -19,7 +19,8 @@ std::array<size_t, 3> Image::size() const {
 void Image::write_ppm(const std::string& path) const {
     std::ofstream out;
     out.open(path);
-    out << "P6\n" << width_ << " " << height_ << "\n" << 255 << "\n";
+    auto format = channels_ == 1 ? "P5\n" : "P6\n";
+    out << format << width_ << " " << height_ << "\n" << 255 << "\n";
     out.write((char*)data_.data(), width_ * height_ * channels_);
     out.close();
 }

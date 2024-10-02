@@ -16,21 +16,23 @@ public:
 
     bytes read(size_t n_bytes);
 
-    bytes read_page();
-
 private:
 
-    bytes read_subpage(size_t n_bytes);
+    void read_page();
 
 private:
     std::ifstream file_;
     char buffer_[page_size];
+    size_t buffer_size_;
+    size_t byte_pos_;
 };
 
 class JpegReader: public BinaryReader {
 public:
 
     JpegReader(const std::string& path);
+
+    Marker read_marker();
 
     std::tuple<Marker, bytes> read_segment();
 };
@@ -48,13 +50,11 @@ public:
 
 private:
 
-    std::optional<byte> read_byte();
+    byte read_byte();
 
 private:
-    size_t bit_pos_;
-    size_t byte_pos_;
     JpegReader& reader_;
-    bytes data_;
+    size_t bit_pos_;
     uint64_t byte_;
 };
 

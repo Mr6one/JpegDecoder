@@ -30,6 +30,7 @@ struct ImageMeta {
     size_t width = 0;
     size_t channels = 0;
     size_t precision = 0;
+    size_t restart_interval = 0;
     size_t n_mcu_x = 0;
     size_t n_mcu_y = 0;
     size_t mcu_height = 0;
@@ -64,6 +65,8 @@ private:
     void process_huffman_tree(const bytes& raw_data);
 
     void process_quantization_table(const bytes& raw_data);
+
+    void process_restart_interval(const bytes& data);
 
 private:
     JpegReader reader_;
