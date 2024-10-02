@@ -1,7 +1,7 @@
 # JPEG Decoder Library
 This repo contains an implemetation of JPEG decoder. Currently only baseline DCT and extended sequential DCT modes are supported. The project uses [fast and optimized DCT algorithm](https://github.com/Mr6one/FastDCT) as a thirdparty.
 
-Decoding large 21600x10800px [Earth Topography](samples/topography.jpeg) image without chroma subsampling (YCbCr444) takes just 1.7 seconds on x64 Intel Core i7-9750H @ 2.60GHz CPU.
+Decoding large 21600x10800px [Earth Topography](samples/topography.jpeg) image without chroma subsampling (YCbCr444) takes just 1.5 seconds on x64 Intel Core i7-9750H @ 2.60GHz CPU.
 
 ## Demo
 To run demo follow the next steps:

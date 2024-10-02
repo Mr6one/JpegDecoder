@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.hpp"
+#include "readers.hpp"
 
 #include <optional>
 
@@ -16,17 +17,21 @@ class HuffmanTree {
 
 public:
 
-    HuffmanTree(const std::vector<byte>& lengths, const std::vector<byte>& codes);
+    HuffmanTree(const bytes& lengths, const bytes& codes);
 
-    std::optional<int> move(bit bit_);
+    int lookup(BitStream& reader);
 
 private:
 
-    bool add_node(Node* node, size_t height, int code);
+    std::optional<int> add_node(Node* node, size_t height, int code = 0);
 
 private:
     Node* root_ = nullptr;
-    Node* search_node_ = nullptr;
+    bytes values_;
+    std::vector<int> codes_;
+    std::vector<int> min_vals_;
+    std::vector<int> max_vals_;
+    std::vector<size_t> valptr_;
 };
 
 }  // namespace jpeg

@@ -101,22 +101,13 @@ std::optional<Image> DecoderImpl::decode() {
 
 std::array<float, 64> DecoderImpl::read_component(size_t channel) {
     auto quantization_table = quantization_tables_[meta_.channels_meta[channel].dqt_component].value();
-    auto huffman_lookup_bitstream = [this](HuffmanTree& tree) {
-        std::optional<size_t> code;
-        while (!code) {
-            auto bit_ = bitstream_.read();
-            if (!bit_) throw std::runtime_error("unexpected EOF");
-            code = tree.move(bit_.value());
-        }
-        return code.value();
-    };
     auto extend_code = [](int value, size_t T) {
         int threshold = 1 << (T - 1);
         if (value < threshold) value += 1 - (1 << T);
         return value;
     };
     auto read_dc = [&, this](std::array<float, 64>& component) {
-        auto length = huffman_lookup_bitstream(huffman_trees_[0][meta_.channels_meta[channel].dc_component].value());
+        auto length = huffman_trees_[0][meta_.channels_meta[channel].dc_component]->lookup(bitstream_);
         prev_dc_[channel] += extend_code(bitstream_.read(length), length);
         component[0] = quantization_table[0] * prev_dc_[channel];
 #if SCALED_DCT
@@ -125,7 +116,7 @@ std::array<float, 64> DecoderImpl::read_component(size_t channel) {
     };
     auto read_ac = [&, this](std::array<float, 64>& component) {
         for (size_t K = 1; K < 64;) {
-            auto code = huffman_lookup_bitstream(huffman_trees_[1][meta_.channels_meta[channel].ac_component].value());
+            auto code = huffman_trees_[1][meta_.channels_meta[channel].ac_component]->lookup(bitstream_);
             size_t zpad = (code >> 4) & 0xF;
             size_t length = code & 0xF;
             if (!length) {
