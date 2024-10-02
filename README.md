@@ -1,11 +1,13 @@
 # JPEG Decoder Library
 This repo contains an implemetation of JPEG decoder. Currently only baseline DCT and extended sequential DCT modes are supported. The project uses [fast and optimized DCT algorithm](https://github.com/Mr6one/FastDCT) as a thirdparty.
 
+Decoding large 21600x10800px [Earth Topography](https://visibleearth.nasa.gov/images/73934/topography) image without chroma subsampling (YCbCr444) takes just 1.7 seconds on x64 Intel Core i7-9750H @ 2.60GHz CPU.
+
 ## Demo
 To run demo follow the next steps:
 
 ```code
-git clone --recurse-submodules git@github.com:Mr6one/JpegDecoder.git
+git clone --recurse-submodules https://github.com/Mr6one/JpegDecoder.git
 cd JpegDecoder/demo
 mkdir build && cd build
 cmake .. && make -j4
