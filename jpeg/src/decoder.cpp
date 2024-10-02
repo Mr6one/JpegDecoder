@@ -53,6 +53,7 @@ void DecoderImpl::prepare() {
             case DNL_MARKER:
                 break;
             case DRI_MARKER:
+                process_restart_interval(data);
                 break;
             case DATA_MARKER:
                 process_scan(data);
@@ -64,6 +65,8 @@ void DecoderImpl::prepare() {
 }
 
 std::optional<Image> DecoderImpl::decode() {
+    auto restart_cnt = meta_.restart_interval;
+    auto total_mcu = meta_.n_mcu_x * meta_.n_mcu_y;
     for (size_t x = 0; x < meta_.n_mcu_x; ++x) {
         for (size_t y = 0; y < meta_.n_mcu_y; ++y) {
             for (size_t channel = 0; channel < meta_.channels; ++channel) {
@@ -74,13 +77,23 @@ std::optional<Image> DecoderImpl::decode() {
                     }
                 }
             }
+            --total_mcu;
+            if (meta_.restart_interval && !(--restart_cnt)) {
+                bitstream_.align_byte();
+                std::fill(prev_dc_.begin(), prev_dc_.end(), 0);
+                restart_cnt = meta_.restart_interval;
+                if (total_mcu) {
+                    auto marker = reader_.read(2);
+                    if (marker[0] != DEFAULT_MARKER || (marker[1] & 0xF8) != RST0_MARKER) 
+                        throw std::runtime_error("wrong marker");
+                }
+            }
         }
     }
-    
     bitstream_.align_byte();
-    size_t marker = bitstream_.read(16);
-    if (((marker >> 8) & 0xFF) == DEFAULT_MARKER && (marker & 0xFF) == END_MARKER && !bitstream_.read()) {
-        utils::YCbCrToRGB(image_);
+    auto [marker, _] = reader_.read_segment();
+    if (marker == END_MARKER) {
+        if (meta_.channels == 3) utils::YCbCrToRGB(image_);
         return image_;
     }
     return {};
@@ -249,6 +262,10 @@ void DecoderImpl::process_quantization_table(const bytes& raw_data) {
         quantization_tables_[table_id].emplace(bytes{raw_data.begin() + 1 + sot, raw_data.begin() + 1 + sot + byte_width * 64}, byte_width);
         sot += byte_width * 64 + 1;
     }
+}
+
+void DecoderImpl::process_restart_interval(const bytes& data) {
+    meta_.restart_interval = (data[0] << 8) | data[1];
 }
 
 ImageMeta DecoderImpl::meta() {

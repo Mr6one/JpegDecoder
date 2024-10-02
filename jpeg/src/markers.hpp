@@ -28,7 +28,16 @@ enum Marker {
     // SOF12_MARKER = 0xCC,  // DAC
     SOF13_MARKER = 0xCD,
     SOF14_MARKER = 0xCE,
-    SOF15_MARKER = 0xCF
+    SOF15_MARKER = 0xCF,
+
+    RST0_MARKER = 0xD0,
+    RST1_MARKER = 0xD1,
+    RST2_MARKER = 0xD2,
+    RST3_MARKER = 0xD3,
+    RST4_MARKER = 0xD4,
+    RST5_MARKER = 0xD5,
+    RST6_MARKER = 0xD6,
+    RST7_MARKER = 0xD7
 };
 
 }  // namespace jpeg
